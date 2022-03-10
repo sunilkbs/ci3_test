@@ -1,14 +1,13 @@
-<!DOCTYPE HTML>
-<html>
-<head>
-  <!-- CSS only -->
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
-
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-
-<script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/jquery.validate.min.js"></script>
-
 <style>
+  
+#addingProductForm{
+  width: 40%;
+}
+button#delete {
+    width: 80px;
+    height: 50px;
+}
+
   form#form {
     width: 40%;
     margin: auto;
@@ -23,36 +22,35 @@
 #divmessage{
   margin-top: 10px;
 }
+
 </style>
 
-</head>
-<body>
+<div class="center">
 
+  <form id="form">
 
-<div class="container">
-
-<form id="form">
-
-  <div class="heading"><u><h3>Registration Page</h3></u></div>
+  <div class="heading"><u><h3>Update Record</h3></u></div>
 
   <div class="form-group">
     <label for="firstName">First Name:</label>
-    <input type="text" class="form-control" id="firstName" name="firstName" placeholder="First Name" >
+    <input type="text" class="form-control" id="firstName" name="firstName" placeholder="First Name" value="<?php echo $result[0]->firstName;?>">
   </div>
 
     <div class="form-group">
     <label for="lastName">Last Name:</label>
-    <input type="text" class="form-control" id="lastName" name="lastName" placeholder="Last Name" >
+    <input type="text" class="form-control" id="lastName" name="lastName" placeholder="Last Name" value="<?php echo $result[0]->lastName;?>" >
   </div>
 
-  <div class="form-group">
+  <!--<div class="form-group">
     <label for="email">Email address</label>
-    <input type="email" class="form-control" id="email" name="email" placeholder="Email" >
+    <input type="email" class="form-control" id="email" name="email" placeholder="Email" value="<?php //echo $result[0]->email;?>">
   </div>
   <div class="form-group">
     <label for="Password">Password</label>
-    <input type="password" class="form-control" id="password" name="password" placeholder="Password" >
-  </div>
+    <input type="password" class="form-control" id="password" name="password" placeholder="Password" value="<?php //echo $result[0]->password;?>" >
+  </div>-->
+
+  <input type="hidden" value="<?php echo $result[0]->Id;?>" id="userId">
 
  <!-- <div class="form-group">
     <label for="confirmPassword">Confirm Password</label>
@@ -63,10 +61,15 @@
 </div>
 <div id="divmessage"><span id="message" style="color:red;margin-top:10px"></span></div>
 
-<div class=""><p><a href="<?php echo base_url('/users/login') ?>">Login</a> (If You have Account)</p></div>
-
-
 </form>
+
+</div>
+
+
+<footer>
+  
+</footer>
+
 </div>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
@@ -76,34 +79,46 @@
 
 <script type="text/javascript">
 
-// Ajax post
-$(document).ready(function() 
-{
+function abc(a){
+if(confirm("Do you want to delete it")){
+window.location = "<?php echo base_url('/users/deleteProduct/');?>"+a;
+}else{
+  
+}
+}
+
+
+
 $("#submitbtn").click(function() 
 {
-
+var userId=$("#userId").val();
+//alert(userId);
 var firstName = $('#firstName').val();
 var lastName = $('#lastName').val();
 var email = $('#email').val();
-var password = $('#password').val();
+//var password = $('#password').val();
+var url = "<?php echo base_url('/users/updateData/'); ?>"+userId;
 
-  if(firstName!="" && lastName!="" && email!="" && password!="")
+//alert(url);
+
+//console.log(url);
+
+  if(firstName!="" && lastName!="" && email!="")
   {
     jQuery.ajax({
     type: "POST",
-    url: "<?php echo base_url('/users/savedata'); ?>",
-    data: {firstName: firstName,lastName:lastName ,email: email,password:password},
+    url: url,
+    data: {firstName: firstName,lastName:lastName ,email: email},
     success: function(res) 
     {
       var result = JSON.parse(res);
       console.log(result);
-      if(result.email=="" && result.success=="success")
+      if(result.success=="success")
       {
       //alert('Data saved successfully'); 
-        $("#message").html("Data saved successfully");
+        $("#message").html("Data Updated successfully");
       }else{
-        alert("email exits");
-        $("#message").html("Email address exits.");
+          $("#message").html("Failed Updation...");
       }
       
     },
@@ -116,11 +131,12 @@ var password = $('#password').val();
   else
   {
   alert("pls fill all fields first");
+  $("#message").html("");
   }
 
 });
-});
-</script>
 
+</script>
+ 
 </body>
 </html>

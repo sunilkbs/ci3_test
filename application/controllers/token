@@ -35,7 +35,7 @@ class Users extends CI_Controller {
 		
 		if(isset($this->session->result)){
 
-			redirect($base['base_url']."/../users/profile");
+			redirect($base['base_url']."/users/profile");
 
 		}else{
 
@@ -150,7 +150,7 @@ class Users extends CI_Controller {
 
 		if(isset($this->session->result)){
 
-			redirect($base['base_url']."/../users/profile");
+			redirect($base['base_url']."/users/profile");
 
 		}else{
 
@@ -203,6 +203,16 @@ class Users extends CI_Controller {
 	     $result=$query->result();
 
 	     $this->session->set_userdata('result',$result);
+
+	   // $result = $this->session->result;
+
+	  /*  foreach($result as $value){
+	    	echo $value->Id;
+	    }
+
+	    print_r($result[0]->Id);*/
+
+	   // die();
 
 	    $messages['message']="success";
 	    $messages['status']="success";
@@ -272,7 +282,7 @@ class Users extends CI_Controller {
 		$this->load->view('userProfile',$base);		
 		
 		}else{
-			redirect($base['base_url']."/users/login");
+			redirect($base['base_url']."\users\login");
 		}
 
 		}
@@ -301,8 +311,6 @@ class Users extends CI_Controller {
 		$response = $this->User_model->addProduct($data);
 		if($response){
 			echo "data Inserted Successfully";
-			redirect($base['base_url'].'/../users/profile');
-			//redirect(base_url('/users/savedata'));
 		}else{
 			echo "Failed Insertion";
 		}	
@@ -313,7 +321,6 @@ class Users extends CI_Controller {
 
 		if($response){
 			echo "data Updated Successfully";
-			redirect($base['base_url'].'/../users/profile');
 		}else{
 			echo "Failed Insertion";
 		}
@@ -321,19 +328,20 @@ class Users extends CI_Controller {
 
 	}else{
 		echo "Session Expired";
-		redirect($base['base_url'].'/users/login');
 	}
 
 		}
 
-	public function deleteProduct($id){
+		public function deleteProduct($id){
 
 
 			if(empty($id)){
 				die("Link Expired");
 			}
 
+	  $response = $this->User_model->userExist($id);
 
+	  if($response){
 
 		if(isset($this->session->result)){
 
@@ -347,13 +355,13 @@ class Users extends CI_Controller {
 
 		if($response){
 				echo "Data Deleted Successfully.";
-				redirect($base['base_url'].'/../users/profile');
-
 			}else{
 				echo "Failed Deletion.";
 			}
 		 }
-
+	  }else{
+	  	die("Product does not Exists");
+	  }
 
 
 	}
@@ -371,19 +379,21 @@ class Users extends CI_Controller {
 
 	public function myProfile($id){
 
+		die("dsdfsdf");
+
 		if(empty($id)){
 			die("Link Expired...");
 		}
+		$base['base_url'] = $this->config->item('base_url');
 
+		if(isset($this->session->result)){
+
+	  print_r($this->session->result);
 
 	  $response = $this->User_model->userExist($id);
 
 
 	  if($response){
-
-		$base['base_url'] = $this->config->item('base_url');
-
-		if(isset($this->session->result)){
 
 	  	$result = $this->User_model->fetchUser($id);
 
@@ -392,14 +402,11 @@ class Users extends CI_Controller {
 		$this->load->view("header",$data);
 
 		$this->load->view("myProfile");
-	}else{
-		echo "session expired";
-		redirect($base['base_url'].'/../users/login');
-	}
 
 	  }else{
 	  	echo "User does not exit...";
 	  }
+	}else{echo "Session Expired";}
 
 
 	}
@@ -446,15 +453,7 @@ class Users extends CI_Controller {
 
 		}else{
 			echo "session expired";
-			redirect($base['base_url'].'/../users/login');
 		}
-	}
-
-	public function userlogout()
-	{
-		$base['base_url'] = $this->config->item('base_url');
-		session_destroy();
-		redirect($base['base_url'].'/users/login');
 	}
 
 	
